@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { buildDataSourceOptions } from './db/data-source';
+import { MoviesModule } from './movies/movies.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { buildDataSourceOptions } from './db/data-source';
         autoLoadEntities: true,
       }),
     }),
+    MoviesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
