@@ -1,40 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Movie } from 'db/entities/movie.entity';
 import { MoviePaginationQueryDto } from './dto/request/movie-pagination-query.dto';
-import { MoviePaginatedDto } from './dto/response/movie-paginated.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { plainToInstance } from 'class-transformer';
 import { MovieItemDto } from './dto/response/movie-item.dto';
+import { MoviesRepository } from './movies.repository';
+import { mapToDto } from 'common/utils/mapper.util';
+import { PaginationResponseDto } from 'dto/response/pagination-response.dto';
 
 @Injectable()
 export class MoviesService {
-  constructor(
-    @InjectRepository(Movie) private readonly repo: Repository<Movie>,
-  ) {}
+  constructor(private readonly moviesRepository: MoviesRepository) {}
 
-  async findAll(query: MoviePaginationQueryDto): Promise<MoviePaginatedDto> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 8;
+  async findAll(
+    query: MoviePaginationQueryDto,
+  ): Promise<PaginationResponseDto<MovieItemDto>> {
+    const { movies, total, pageSize, page } =
+      await this.moviesRepository.findAndCountPaginated(query);
 
-    const [movies, total] = await this.repo.findAndCount({
-      select: { id: true, title: true, posterUrl: true, releaseYear: true },
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { releaseYear: 'DESC' },
-    });
+    const transformedMovies = mapToDto(MovieItemDto, movies);
 
-    const transformedMovies = plainToInstance(MovieItemDto, movies, {
-      excludeExtraneousValues: true,
-    });
-
-    return {
-      data: transformedMovies,
-      totalItems: total,
-      itemCount: transformedMovies.length,
-      itemsPerPage: limit,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-    };
+    return new PaginationResponseDto(transformedMovies, total, page, pageSize);
   }
 }

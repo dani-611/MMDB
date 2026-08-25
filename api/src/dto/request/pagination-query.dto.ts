@@ -1,16 +1,9 @@
-import { IsOptional, IsInt, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { NumberField } from 'common/decorators/number-field.decorator';
 
 export class PaginationQueryDto {
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
+  @NumberField({ min: 1, optional: true })
   page?: number = 1;
 
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  limit?: number = 10;
+  @NumberField({ min: 1, optional: true })
+  pageSize?: number = 10;
 }
