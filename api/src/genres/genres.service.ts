@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Genre } from 'db/entities/genre.entity';
 import { Repository } from 'typeorm';
 import { GenreItemDto } from './dto/response/genre-item.dto';
-import { GenreResponseDto } from './dto/response/genre-response.dto';
-import { plainToInstance } from 'class-transformer';
+import { mapToDto } from '../../common/utils/mapper.util';
 
 @Injectable()
 export class GenresService {
@@ -12,17 +11,13 @@ export class GenresService {
     @InjectRepository(Genre) private readonly repo: Repository<Genre>,
   ) {}
 
-  async findAll(): Promise<GenreResponseDto> {
-    const [genres, total] = await this.repo.findAndCount({
+  async findAll(): Promise<GenreItemDto[]> {
+    const genres = await this.repo.find({
       select: { uuid: true, name: true },
+      order: { name: 'ASC' },
     });
-    const transformedGenres = plainToInstance(GenreItemDto, genres, {
-      excludeExtraneousValues: true,
-    });
+    const transformedGenres = mapToDto(GenreItemDto, genres);
 
-    return {
-      data: transformedGenres,
-      totalGenres: total,
-    };
+    return transformedGenres;
   }
 }

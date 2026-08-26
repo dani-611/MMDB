@@ -1,10 +1,25 @@
 import { MMDBLogo } from './MMDBLogo';
-import { Box, Stack } from '@mui/material';
-import { AboutLink } from './AboutLink';
-import { TermsOfUseLink } from './TermsOfUseLink';
-import { PrivacyPolicyLink } from './PrivacyPolicyLink';
-import { HelpLink } from './HelpLink';
+import { Box, Link, Stack } from '@mui/material';
 import { AllRightsReserved } from './AllRightsReserved';
+
+const footerLinks = [
+  {
+    label: 'About',
+    href: 'https://www.imdb.com/pressroom/about/',
+  },
+  {
+    label: 'Terms Of Use',
+    href: 'https://www.imdb.com/conditions/?ref_=hm_ftr',
+  },
+  {
+    label: 'Privacy Policy',
+    href: 'https://www.imdb.com/privacy/?ref_=hm_ftr',
+  },
+  {
+    label: 'Help',
+    href: 'https://help.imdb.com/imdb',
+  },
+];
 
 export const Footer = () => {
   return (
@@ -36,10 +51,20 @@ export const Footer = () => {
           fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
         }}
       >
-        <AboutLink />
-        <TermsOfUseLink />
-        <PrivacyPolicyLink />
-        <HelpLink />
+        {footerLinks.map((link) => {
+          return (
+            <Link
+              key={link.label}
+              href={link.href}
+              underline="hover"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ color: 'white' }}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </Stack>
 
       <Box>

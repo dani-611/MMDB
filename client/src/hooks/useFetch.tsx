@@ -1,67 +1,43 @@
-import { useState, useEffect } from 'react';
-import { ApiStatus } from '../constants/ApiStatus';
+import { useQuery } from '@tanstack/react-query';
+
+export type FetchStatus = 'LOADING' | 'ERROR' | 'EMPTY' | 'DATA';
 
 export interface FetchState<T> {
-  status: string;
+  status: FetchStatus;
   response: T | null;
   error: string | null;
 }
 
 export function useFetch<T>(url: string): FetchState<T> {
-  const [state, setState] = useState<FetchState<T>>({
-    status: ApiStatus.LOADING,
-    response: null,
-    error: null,
+  const { data, error, isPending, isError } = useQuery<T, Error>({
+    queryKey: ['fetchData', url],
+    queryFn: async () => {
+      const response = await fetch(url, { method: 'GET' });
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+      return response.json();
+    },
+    enabled: !!url,
   });
 
-  useEffect(() => {
-    let isCurrent = true;
+  const getStatus = (): FetchStatus => {
+    if (!url) return 'EMPTY';
+    if (isPending) return 'LOADING';
+    if (isError) return 'ERROR';
+    if (!data) return 'EMPTY';
 
-    async function fetchData() {
-      if (isCurrent) {
-        setState({ status: ApiStatus.LOADING, response: null, error: null });
-      }
+    if (Array.isArray(data) && data.length === 0) return 'EMPTY';
 
-      try {
-        const response = await fetch(url, { method: 'GET' });
-        if (!response.ok) {
-          if (response.status === 404) {
-            if (isCurrent)
-              setState({
-                status: ApiStatus.EMPTY,
-                response: null,
-                error: null,
-              });
-            return;
-          }
-          throw new Error(`HTTP Error: ${response.status}`);
-        }
+    const nestedData = (data as { data?: unknown }).data;
+    if (Array.isArray(nestedData) && nestedData.length === 0) return 'EMPTY';
 
-        const result = await response.json();
-        if (!isCurrent) return;
+    return 'DATA';
+  };
 
-        if (!result || (Array.isArray(result) && result.length === 0)) {
-          setState({ status: ApiStatus.EMPTY, response: null, error: null });
-        } else {
-          setState({ status: ApiStatus.DATA, response: result, error: null });
-        }
-      } catch (err) {
-        if (isCurrent) {
-          setState({
-            status: ApiStatus.ERROR,
-            response: null,
-            error: (err as Error).message,
-          });
-        }
-      }
-    }
-
-    fetchData();
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [url]);
-
-  return state;
+  return {
+    status: getStatus(),
+    response: data || null,
+    error: error ? error.message : null,
+  };
 }

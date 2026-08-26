@@ -1,75 +1,29 @@
-import * as React from 'react';
+import { useState, useId } from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useFetch } from '../hooks/useFetch';
-import { ApiStatus } from '../constants/ApiStatus';
-
-interface Genre {
-  uuid: string;
-  name: string;
-}
-interface Genres {
-  data: Genre[];
-  totalGenres: number;
-}
+import { API_CONFIG } from '../config/api.config';
+import { type Genre } from '../types/genre';
 
 export const GenreTab = () => {
-  const [url, setUrl] = React.useState<string>('');
-  const { status, response, error } = useFetch<Genres>(url);
-  const data = response ? response.data : [];
-  const id = React.useId();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const id = useId();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isOpen = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const fullUrl = `${API_CONFIG.apiBaseUrl}${API_CONFIG.genresEndpoint}`;
+  const { status, response: genres, error } = useFetch<Genre[]>(fullUrl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
     setAnchorEl(event.currentTarget);
-    setUrl('http://localhost:3000/genres');
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const renderMenuItems = () => {
-    if (!url) return null;
-
-    switch (status) {
-      case ApiStatus.LOADING:
-        return <MenuItem onClick={handleClose}>Loading...</MenuItem>;
-      case ApiStatus.ERROR:
-        return (
-          <MenuItem onClick={handleClose}>
-            Error Loading Genres: {error}
-          </MenuItem>
-        );
-      case ApiStatus.EMPTY:
-        return <MenuItem onClick={handleClose}>No Genres Found</MenuItem>;
-      case ApiStatus.DATA:
-        if (!Array.isArray(data)) {
-          return (
-            <MenuItem onClick={handleClose}>
-              Error: API response is not an array
-            </MenuItem>
-          );
-        }
-
-        return data.map((genre) => (
-          <MenuItem key={genre.uuid} onClick={handleClose}>
-            {genre.name}
-          </MenuItem>
-        ));
-      default:
-        return null;
-    }
-  };
+  const handleClose = () => setAnchorEl(null);
 
   return (
     <div>
       <Button
         id={`${id}-button`}
-        aria-controls={open ? `${id}-menu` : undefined}
+        aria-controls={isOpen ? `${id}-menu` : undefined}
         aria-haspopup="true"
-        aria-expanded={open}
+        aria-expanded={isOpen}
         onClick={handleClick}
         endIcon={<ArrowDropDownIcon />}
         disableRipple
@@ -83,17 +37,26 @@ export const GenreTab = () => {
       >
         Genre
       </Button>
-
       <Menu
         id={`${id}-menu`}
         anchorEl={anchorEl}
-        open={open}
+        open={isOpen}
         onClose={handleClose}
-        slotProps={{
-          list: { 'aria-labelledby': `${id}-button` },
-        }}
+        slotProps={{ list: { 'aria-labelledby': `${id}-button` } }}
       >
-        {renderMenuItems()}
+        {status === 'LOADING' && <MenuItem disabled>Loading...</MenuItem>}
+        {status === 'ERROR' && (
+          <MenuItem disabled>Error Loading Genres: {error}</MenuItem>
+        )}
+        {status === 'EMPTY' && <MenuItem disabled>No Genres Found</MenuItem>}
+
+        {status === 'DATA' &&
+          Array.isArray(genres) &&
+          genres.map((genre) => (
+            <MenuItem key={genre.uuid} onClick={handleClose}>
+              {genre.name}
+            </MenuItem>
+          ))}
       </Menu>
     </div>
   );
