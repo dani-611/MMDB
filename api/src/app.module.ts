@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { buildDataSourceOptions } from './db/data-source';
 import { GenresModule } from './genres/genres.module';
+import { MoviesModule } from './movies/movies.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GenresModule } from './genres/genres.module';
       }),
     }),
     GenresModule,
+    MoviesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
