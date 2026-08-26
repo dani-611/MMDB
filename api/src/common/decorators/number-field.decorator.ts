@@ -11,15 +11,15 @@ export interface NumberFieldOptions {
 export function NumberField(options: NumberFieldOptions = {}) {
   const decorators = [Type(() => Number), IsInt()];
 
-  if (options.optional !== false) {
+  if (options.optional) {
     decorators.push(IsOptional());
   }
 
-  if (options.min !== undefined) {
+  if (options.min) {
     decorators.push(Min(options.min));
   }
 
-  if (options.max !== undefined) {
+  if (options.max) {
     decorators.push(Max(options.max));
   }
 
