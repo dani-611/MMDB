@@ -1,17 +1,26 @@
 import { useState, useId } from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { useFetch } from '../hooks/useFetch';
-import { API_CONFIG } from '../config/api.config';
-import { type Genre } from '../types/genre';
+import { useQuery } from '@tanstack/react-query';
+import genreServices from '../services/genresServices';
 
 export const GenreTab = () => {
   const id = useId();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isOpen = Boolean(anchorEl);
 
-  const fullUrl = `${API_CONFIG.apiBaseUrl}${API_CONFIG.genresEndpoint}`;
-  const { status, response: genres, error } = useFetch<Genre[]>(fullUrl);
+  const {
+    data: genres,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['genres'],
+    queryFn: genreServices.getList,
+    enabled: isOpen,
+    staleTime: 5 * 60 * 1000,
+  });
+  const isEmpty = !isPending && (!genres || genres.length === 0);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
     setAnchorEl(event.currentTarget);
@@ -44,13 +53,14 @@ export const GenreTab = () => {
         onClose={handleClose}
         slotProps={{ list: { 'aria-labelledby': `${id}-button` } }}
       >
-        {status === 'LOADING' && <MenuItem disabled>Loading...</MenuItem>}
-        {status === 'ERROR' && (
-          <MenuItem disabled>Error Loading Genres: {error}</MenuItem>
+        {isPending && <MenuItem disabled>Loading...</MenuItem>}
+        {isEmpty && <MenuItem disabled>No Genres Found</MenuItem>}
+        {isError && (
+          <MenuItem disabled>Error Loading Genres: {error?.message}</MenuItem>
         )}
-        {status === 'EMPTY' && <MenuItem disabled>No Genres Found</MenuItem>}
-
-        {status === 'DATA' &&
+        {!isPending &&
+          !isError &&
+          genres &&
           Array.isArray(genres) &&
           genres.map((genre) => (
             <MenuItem key={genre.uuid} onClick={handleClose}>

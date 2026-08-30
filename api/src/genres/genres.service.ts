@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Genre } from 'db/entities/genre.entity';
 import { Repository } from 'typeorm';
 import { GenreItemDto } from './dto/response/genre-item.dto';
-import { mapToDto } from '../../common/utils/mapper.util';
+import { mapToDto } from '../common/utils/mapper.util';
 
 @Injectable()
 export class GenresService {
