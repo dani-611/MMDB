@@ -3,7 +3,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-import { type MovieItem } from '../types/movie-item.types';
+import { type MovieItem } from '../types/movie-item.type';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 
 export const MovieCard = (movie: MovieItem) => {

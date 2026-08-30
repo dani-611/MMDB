@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { MovieCard } from './MovieCard';
-import { type MovieItem } from '../types/movie-item.types';
+import { type MovieItem } from '../types/movie-item.type';
 
 export const MovieGrid = ({ movies }: { movies: MovieItem[] }) => {
   return (
