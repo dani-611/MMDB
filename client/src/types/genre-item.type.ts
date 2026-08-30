@@ -1,4 +1,4 @@
-export interface Genre {
+export interface GenreItem {
   uuid: string;
   name: string;
 }
