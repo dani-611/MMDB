@@ -25,8 +25,8 @@ export const HomePage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const isEmpty =
-    !isPending && !isError && (!response || response.results.length === 0);
+  const isEmpty = response?.results && response?.results.length === 0;
+
   const activePageNumber = page ? parseInt(page, 10) : 1;
 
   const handlePageChange = (
@@ -70,7 +70,7 @@ export const HomePage = () => {
         <Box sx={{ textAlign: 'center', my: 5 }}>No movies found.</Box>
       )}
 
-      {!isPending && !isError && response && response.results.length > 0 && (
+      {response && (
         <>
           <MovieGrid movies={response.results} />
 

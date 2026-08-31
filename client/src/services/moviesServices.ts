@@ -7,10 +7,8 @@ interface GetListParams {
 }
 
 class MoviesServices {
-  private apiPath = import.meta.env.VITE_MOVIES_ENDPOINT;
-
   getList = async (params?: GetListParams) => {
-    const response = await apiClient.get<MoviesResponse>(this.apiPath, {
+    const response = await apiClient.get<MoviesResponse>('/movies', {
       params: {
         ...(params?.page && { page: params.page }),
         ...(params?.pageSize && { pageSize: params.pageSize }),
