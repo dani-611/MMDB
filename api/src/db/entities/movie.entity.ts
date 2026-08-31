@@ -24,19 +24,19 @@ export class Movie {
   releaseYear!: number;
 
   @Column({ name: 'runtime_minutes', type: 'integer', nullable: true })
-  runtimeMinutes!: number | null;
+  runtimeMinutes?: number | null;
 
   @Column({ type: 'text', nullable: true })
-  overview!: string | null;
+  overview?: string | null;
 
   @Column({ name: 'poster_url', type: 'text', nullable: true })
-  posterUrl!: string | null;
+  posterUrl?: string | null;
 
   @Column({ name: 'trailer_url', type: 'text', nullable: true })
-  trailerUrl!: string | null;
+  trailerUrl?: string | null;
 
   @Column({ type: 'text', nullable: true })
-  language!: string | null;
+  language?: string | null;
 
   constructor() {}
 }
