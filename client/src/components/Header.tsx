@@ -18,15 +18,18 @@ export const Header = () => {
           top: 0,
           left: 0,
           right: 0,
-          paddingLeft: '4rem',
-          paddingRight: '4rem',
+          px: { xs: '0rem', sm: '1rem', md: '4rem', lg: '8rem' },
           zIndex: (theme) => theme.zIndex.drawer + 1,
           boxShadow: 'none',
           borderBottom: '1px solid #dddddd',
         }}
       >
         <Toolbar
-          sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: 2,
+          }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <MMDBLogo />
