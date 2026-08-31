@@ -20,7 +20,7 @@ export const GenreTab = () => {
     enabled: isOpen,
     staleTime: 5 * 60 * 1000,
   });
-  const isEmpty = !isPending && (!genres || genres.length === 0);
+  const isEmpty = genres && genres.length === 0;
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
     setAnchorEl(event.currentTarget);
@@ -58,15 +58,11 @@ export const GenreTab = () => {
         {isError && (
           <MenuItem disabled>Error Loading Genres: {error?.message}</MenuItem>
         )}
-        {!isPending &&
-          !isError &&
-          genres &&
-          Array.isArray(genres) &&
-          genres.map((genre) => (
-            <MenuItem key={genre.uuid} onClick={handleClose}>
-              {genre.name}
-            </MenuItem>
-          ))}
+        {(genres || []).map((genre) => (
+          <MenuItem key={genre.uuid} onClick={handleClose}>
+            {genre.name}
+          </MenuItem>
+        ))}
       </Menu>
     </div>
   );
