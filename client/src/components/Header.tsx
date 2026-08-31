@@ -1,14 +1,19 @@
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
+
 import { GenreTab } from './GenreTab';
 import { HomeTab } from './HomeTab';
 import { LoginButton } from './LoginButton';
 import { MMDBLogo } from './MMDBLogo';
 import { SearchField } from './SearchField';
 import { SignUpButton } from './SignUpButton';
+import { UserProfileMenu } from './UserProfileMenu';
+import { useAuth } from '../context/AuthContext';
 
 export const Header = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
       <AppBar
@@ -39,8 +44,15 @@ export const Header = () => {
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <SearchField />
-            <SignUpButton />
-            <LoginButton />
+
+            {isAuthenticated ? (
+              <UserProfileMenu />
+            ) : (
+              <>
+                <SignUpButton />
+                <LoginButton />
+              </>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

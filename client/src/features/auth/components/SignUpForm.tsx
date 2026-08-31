@@ -1,214 +1,130 @@
-import * as React from 'react';
-import {
-  Button,
-  OutlinedInput,
-  Link,
-  Typography,
-  Box,
-  Container,
-  Paper,
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router';
-import { FormAlert, PasswordField } from './FormShared';
+import { useState } from 'react';
+import { Link, Typography } from '@mui/material';
+import { Link as RouterLink, useNavigate } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { FormContainer } from './FormContainer';
+import { FormField } from './FormField';
+import { FormSubmitButton } from './FormSubmitButton';
+import { PasswordField } from './PasswordField';
+import AuthServices from '../../../services/authServices';
+import type { AuthResponse } from '../types/auth-repsonse.type';
+import type { SignUpRequest } from '../types/sign-in-request.type';
+import { useAuth } from '../../../context/AuthContext';
+
+interface NestApiError {
+  message?: string | string[];
+}
 
 export const SignUpForm = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const signupMutation = useMutation<
+    AuthResponse,
+    AxiosError<NestApiError>,
+    SignUpRequest
+  >({
+    mutationFn: AuthServices.signUp,
+    onSuccess: (data) => {
+      setErrorMessage(null);
+      login(data);
+      navigate('/movies');
+    },
+    onError: (error) => {
+      const serverMessage = error.response?.data?.message;
+      setErrorMessage(
+        serverMessage
+          ? Array.isArray(serverMessage)
+            ? serverMessage.join(', ')
+            : serverMessage
+          : 'Registration failed! Please try again...'
+      );
+    },
+  });
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    alert(`Signing up: ${data.get('firstName')} ${data.get('lastName')}`);
+    if (!firstName || !lastName || !email || !password) {
+      setErrorMessage('All fields are required.');
+      return;
+    }
+    signupMutation.mutate({ firstName, lastName, email, password });
   };
 
+  const isPending = signupMutation.isPending;
+
   return (
-    <Container component="main" maxWidth="xs" sx={{ mt: 1 }}>
-      <Paper
-        elevation={0}
+    <FormContainer
+      title="Create your account"
+      errorMessage={errorMessage}
+      onSubmit={handleSubmit}
+    >
+      <FormField
+        label="First name"
+        id="firstName"
+        type="text"
+        required
+        placeholder="John"
+        value={firstName}
+        disabled={isPending}
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+
+      <FormField
+        label="Last name"
+        id="lastName"
+        type="text"
+        required
+        placeholder="Doe"
+        value={lastName}
+        disabled={isPending}
+        onChange={(e) => setLastName(e.target.value)}
+      />
+
+      <FormField
+        label="Email"
+        id="email"
+        type="email"
+        required
+        placeholder="email@example.com"
+        value={email}
+        disabled={isPending}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <PasswordField
+        value={password}
+        disabled={isPending}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <FormSubmitButton label="Sign up" isPending={isPending} />
+
+      <Typography
+        variant="body2"
         sx={{
-          p: 4,
-          borderRadius: '12px',
-          border: '1px solid #e0e0e0',
-          backgroundColor: '#ffffff',
+          textAlign: 'start',
+          width: '100%',
+          color: 'text.secondary',
+          mt: 1,
         }}
       >
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: '700', width: '100%', textAlign: 'left', mb: 1 }}
+        Already have an account?{' '}
+        <Link
+          component={RouterLink}
+          to="/login"
+          sx={{ textDecoration: 'none', fontWeight: '500', color: '#1976d2' }}
         >
-          Create your account
-        </Typography>
-
-        <FormAlert message="This can be your error message." />
-
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ width: '100%' }}
-        >
-          <Box sx={{ width: '100%', mb: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: '600',
-                mb: 0.5,
-                textAlign: 'left',
-                color: 'text.primary',
-              }}
-            >
-              First name
-            </Typography>
-            <OutlinedInput
-              id="firstName"
-              name="firstName"
-              type="text"
-              required
-              fullWidth
-              size="small"
-              placeholder="John"
-              sx={{
-                backgroundColor: '#ffffff',
-                borderRadius: '8px',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#cccccc',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#999999',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#1976d2',
-                  borderWidth: '1px',
-                },
-              }}
-            />
-          </Box>
-
-          <Box sx={{ width: '100%', mb: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: '600',
-                mb: 0.5,
-                textAlign: 'left',
-                color: 'text.primary',
-              }}
-            >
-              Last name
-            </Typography>
-            <OutlinedInput
-              id="lastName"
-              name="lastName"
-              type="text"
-              required
-              fullWidth
-              size="small"
-              placeholder="Doe"
-              sx={{
-                backgroundColor: '#ffffff',
-                borderRadius: '8px',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#cccccc',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#999999',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#1976d2',
-                  borderWidth: '1px',
-                },
-              }}
-            />
-          </Box>
-
-          <Box sx={{ width: '100%', mb: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: '600',
-                mb: 0.5,
-                textAlign: 'left',
-                color: 'text.primary',
-              }}
-            >
-              Email
-            </Typography>
-            <OutlinedInput
-              id="email"
-              name="email"
-              type="email"
-              required
-              fullWidth
-              size="small"
-              placeholder="email@example.com"
-              sx={{
-                backgroundColor: '#ffffff',
-                borderRadius: '8px',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#cccccc',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#999999',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#1976d2',
-                  borderWidth: '1px',
-                },
-              }}
-            />
-          </Box>
-
-          <Box sx={{ width: '100%', mb: 3 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: '600',
-                mb: 0.5,
-                textAlign: 'left',
-                color: 'text.primary',
-              }}
-            >
-              Password
-            </Typography>
-            <PasswordField />
-          </Box>
-
-          <Button
-            type="submit"
-            variant="contained"
-            size="medium"
-            disableElevation
-            fullWidth
-            sx={{
-              mb: 2,
-              backgroundColor: '#1976d2',
-              color: '#ffffff',
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontWeight: '600',
-              py: 1,
-              '&:hover': { backgroundColor: '#115293' },
-            }}
-          >
-            Sign up
-          </Button>
-
-          <Typography
-            variant="body2"
-            sx={{ textAlign: 'start', width: '100%', color: 'text.secondary' }}
-          >
-            Already have an account?{' '}
-            <Link
-              component={RouterLink}
-              to="/login"
-              sx={{
-                textDecoration: 'none',
-                fontWeight: '500',
-                color: '#1976d2',
-              }}
-            >
-              Sign in
-            </Link>
-          </Typography>
-        </Box>
-      </Paper>
-    </Container>
+          Sign in
+        </Link>
+      </Typography>
+    </FormContainer>
   );
 };
