@@ -39,7 +39,7 @@ export const Footer = () => {
       }}
     >
       <Box>
-        <MMDBLogo />
+        <MMDBLogo href="#" />
       </Box>
 
       <Stack

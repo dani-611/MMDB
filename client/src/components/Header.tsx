@@ -29,7 +29,7 @@ export const Header = () => {
           sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <MMDBLogo />
+            <MMDBLogo href="#" />
             <HomeTab />
             <GenreTab />
           </Box>
