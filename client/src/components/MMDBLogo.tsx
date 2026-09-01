@@ -1,17 +1,23 @@
-import { Button } from '@mui/material';
+import { Button, type SxProps, type Theme } from '@mui/material';
 
-export const MMDBLogo = () => {
+interface MMDBLogoProps {
+  sx?: SxProps<Theme>;
+  href?: string;
+}
+
+export const MMDBLogo = ({ sx, href }: MMDBLogoProps) => {
   return (
     <Button
       variant="text"
-      href="#"
       disableRipple
+      href={href}
       sx={{
         fontWeight: '600',
         fontSize: '1.6rem',
         '&:hover': {
           backgroundColor: 'transparent',
         },
+        ...sx,
       }}
     >
       MMDB

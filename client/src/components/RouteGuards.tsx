@@ -1,0 +1,7 @@
+import { Navigate, Outlet } from 'react-router';
+import { useAuth } from '../context/AuthContext';
+
+export const PublicOnlyRoute = () => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/movies" replace /> : <Outlet />;
+};

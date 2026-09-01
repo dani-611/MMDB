@@ -1,18 +1,22 @@
-import { Button } from '@mui/material';
+import { Button, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router';
 
 export const SignUpButton = () => {
   return (
     <>
-      <Button
-        variant="text"
-        sx={{
-          fontWeight: '600',
-          fontSize: '0.8rem',
-          textTransform: 'none',
-        }}
-      >
-        Sign Up
-      </Button>
+      <Link to="/signup" component={RouterLink}>
+        <Button
+          sx={{
+            fontWeight: '600',
+            fontSize: '0.8rem',
+            textDecoration: 'none',
+            textTransform: 'none',
+          }}
+          variant="text"
+        >
+          Sign Up
+        </Button>
+      </Link>
     </>
   );
 };

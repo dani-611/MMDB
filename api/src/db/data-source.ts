@@ -20,7 +20,7 @@ export const buildDataSourceOptions = (configSource: {
   synchronize: false,
   logging: true,
   entities: [join(__dirname, '..', '**', '*.entity.{js,ts}')],
-  migrations: [join(__dirname, '..', 'migrations', '*.{js,ts}')],
+  migrations: [join(__dirname, 'migrations', '*.{js,ts}')],
 });
 
 const cliDataSourceOptions: DataSourceOptions = {
@@ -32,8 +32,8 @@ const cliDataSourceOptions: DataSourceOptions = {
   database: process.env.DB_NAME || 'mmdb',
   synchronize: false,
   logging: true,
-  entities: [__dirname + '/entities/*.entity.{js,ts}'],
-  migrations: ['dist/db/migrations/*.js'],
+  entities: [join(__dirname, '..', '**', '*.entity.{js,ts}')],
+  migrations: [join(__dirname, 'migrations', '*.{js,ts}')],
 };
 
 const dataSource = new DataSource(cliDataSourceOptions);
