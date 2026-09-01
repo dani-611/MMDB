@@ -52,7 +52,7 @@ export const SignUpForm = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!firstName || !lastName || !email || !password) {
-      setErrorMessage('All fields are required.');
+      setErrorMessage('All fields are required!');
       return;
     }
     signupMutation.mutate({ firstName, lastName, email, password });

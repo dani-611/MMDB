@@ -9,7 +9,9 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('mmdb_token');
+    const token =
+      localStorage.getItem('mmdb_token') ||
+      sessionStorage.getItem('mmdb_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }

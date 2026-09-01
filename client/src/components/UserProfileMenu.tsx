@@ -5,8 +5,8 @@ import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAuth } from '../context/AuthContext';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export const UserProfileMenu = () => {
   const { user, logout } = useAuth();
@@ -59,7 +59,7 @@ export const UserProfileMenu = () => {
           {user.firstName}
         </Typography>
         <IconButton size="small" sx={{ p: 0, color: 'text.secondary' }}>
-          <KeyboardArrowDownIcon
+          <ArrowDropDownIcon
             sx={{
               transform: isMenuOpen ? 'rotate(180deg)' : 'none',
               transition: 'transform 0.2s ease-in-out',

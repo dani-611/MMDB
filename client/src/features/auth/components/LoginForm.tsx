@@ -22,6 +22,7 @@ export const LoginForm = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const loginMutation = useMutation<
@@ -32,7 +33,7 @@ export const LoginForm = () => {
     mutationFn: AuthServices.signIn,
     onSuccess: (data) => {
       setErrorMessage(null);
-      login(data);
+      login(data, rememberMe);
       navigate('/movies');
     },
     onError: (error) => {
@@ -50,7 +51,7 @@ export const LoginForm = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email || !password) {
-      setErrorMessage('Please fill out all fields.');
+      setErrorMessage('Please fill out all fields!');
       return;
     }
     loginMutation.mutate({ email, password });
@@ -100,6 +101,8 @@ export const LoginForm = () => {
             value="true"
             color="primary"
             sx={{ pr: 0.5, pl: 0, '& .MuiSvgIcon-root': { fontSize: 20 } }}
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
           />
         }
         sx={{ width: '100%', justifyContent: 'flex-start', ml: 0, my: 0.5 }}

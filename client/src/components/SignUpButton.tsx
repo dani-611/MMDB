@@ -4,20 +4,19 @@ import { Link as RouterLink } from 'react-router';
 export const SignUpButton = () => {
   return (
     <>
-      <Button variant="text">
-        <Link
+      <Link to="/signup" component={RouterLink}>
+        <Button
           sx={{
             fontWeight: '600',
             fontSize: '0.8rem',
             textDecoration: 'none',
             textTransform: 'none',
           }}
-          to="/signup"
-          component={RouterLink}
+          variant="text"
         >
           Sign Up
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </>
   );
 };
