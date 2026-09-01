@@ -3,11 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Review } from './review.entity';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn({ type: 'integer' })
+  @PrimaryGeneratedColumn()
   id!: number;
 
   @Column({ type: 'text', unique: true })
@@ -25,4 +27,7 @@ export class User {
     default: () => 'now()',
   })
   createdAt!: Date;
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews!: Review[];
 }

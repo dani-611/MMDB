@@ -2,9 +2,15 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   Index,
   Generated,
 } from 'typeorm';
+import { MovieGenre } from './movie-genre.entity';
+import { MovieCast } from './movie-cast.entity';
+import { MovieCrew } from './movie-crew.entity';
+import { Award } from './award.entity';
+import { Review } from './review.entity';
 
 @Entity('movies')
 @Index('movies_title_lower_idx', { synchronize: false })
@@ -37,6 +43,24 @@ export class Movie {
 
   @Column({ type: 'text', nullable: true })
   language?: string | null;
+
+  @Column({ type: 'numeric', precision: 3, scale: 1, nullable: true })
+  rating?: number | null;
+
+  @OneToMany(() => MovieGenre, (movieGenre) => movieGenre.movie)
+  movieGenres!: MovieGenre[];
+
+  @OneToMany(() => MovieCast, (cast) => cast.movie)
+  cast!: MovieCast[];
+
+  @OneToMany(() => MovieCrew, (crew) => crew.movie)
+  crew!: MovieCrew[];
+
+  @OneToMany(() => Award, (award) => award.movie)
+  awards!: Award[];
+
+  @OneToMany(() => Review, (review) => review.movie)
+  reviews!: Review[];
 
   constructor() {}
 }
