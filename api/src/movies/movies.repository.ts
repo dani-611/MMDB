@@ -24,6 +24,7 @@ export class MoviesRepository extends Repository<Movie> {
         title: true,
         posterUrl: true,
         releaseYear: true,
+        rating: true,
       },
       skip: (page - 1) * pageSize,
       take: pageSize,

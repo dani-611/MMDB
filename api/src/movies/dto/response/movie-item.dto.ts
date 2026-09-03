@@ -5,4 +5,5 @@ export class MovieItemDto {
   @Expose() title!: string;
   @Expose() posterUrl?: string | null;
   @Expose() releaseYear!: number;
+  @Expose() rating?: string | null;
 }

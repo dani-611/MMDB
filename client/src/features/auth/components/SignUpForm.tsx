@@ -11,6 +11,7 @@ import AuthServices from '../../../services/authServices';
 import type { AuthResponse } from '../types/auth-repsonse.type';
 import type { SignUpRequest } from '../types/sign-in-request.type';
 import { useAuth } from '../../../context/AuthContext';
+import { useLocation } from 'react-router';
 
 interface NestApiError {
   message?: string | string[];
@@ -26,6 +27,8 @@ export const SignUpForm = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const location = useLocation();
+
   const signupMutation = useMutation<
     AuthResponse,
     AxiosError<NestApiError>,
@@ -35,7 +38,11 @@ export const SignUpForm = () => {
     onSuccess: (data) => {
       setErrorMessage(null);
       login(data);
-      navigate('/movies');
+
+      const stateLocation = location.state as { from?: string } | null;
+      const originPath = stateLocation?.from || '/movies';
+
+      navigate(originPath, { replace: true });
     },
     onError: (error) => {
       const serverMessage = error.response?.data?.message;

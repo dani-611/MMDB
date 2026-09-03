@@ -1,10 +1,16 @@
 import { Button, Link } from '@mui/material';
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink, useLocation } from 'react-router';
 
 export const LoginButton = () => {
+  const location = useLocation();
+
   return (
     <>
-      <Link to="/login" component={RouterLink}>
+      <Link
+        to="/login"
+        component={RouterLink}
+        state={{ from: location.pathname }}
+      >
         <Button
           variant="contained"
           disableElevation

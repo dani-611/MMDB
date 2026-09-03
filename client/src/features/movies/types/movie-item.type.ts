@@ -3,4 +3,5 @@ export interface MovieItem {
   title: string;
   posterUrl: string;
   releaseYear: number;
+  rating: number;
 }

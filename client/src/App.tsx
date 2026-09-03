@@ -6,6 +6,7 @@ import { Header } from './components/Header';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { SignUpPage } from './pages/SignUpPage/SignUpPage';
 import { PublicOnlyRoute } from './components/RouteGuards';
+import { MovieDetailsPage } from './pages/MovieDetailsPage/MovieDetailsPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
         </Route>
+        <Route path="/movies/:uuid" element={<MovieDetailsPage />} />
         <Route path="*" element={<Navigate to="/movies" replace />} />
       </Routes>
       <Footer />

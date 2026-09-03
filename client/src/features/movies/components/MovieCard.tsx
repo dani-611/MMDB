@@ -2,6 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router';
 import { CardActionArea } from '@mui/material';
 import { type MovieItem } from '../types/movie-item.type';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
@@ -20,6 +21,8 @@ export const MovieCard = (movie: MovieItem) => {
       }}
     >
       <CardActionArea
+        component={RouterLink}
+        to={`/movies/${movie.uuid}`}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -32,7 +35,7 @@ export const MovieCard = (movie: MovieItem) => {
         <CardMedia
           component="img"
           image={movie.posterUrl}
-          alt={`${movie.posterUrl} Poster`}
+          alt={`${movie.title} Poster`}
           sx={{
             borderRadius: '10px',
             width: '100%',
@@ -61,7 +64,7 @@ export const MovieCard = (movie: MovieItem) => {
             }}
           >
             <StarRateRoundedIcon sx={{ color: '#ffb601' }} />
-            8.9
+            {movie.rating || '0.0'}
           </Typography>
           <Typography
             variant="h6"
